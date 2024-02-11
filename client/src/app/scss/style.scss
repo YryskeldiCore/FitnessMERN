@@ -1,0 +1,245 @@
+// ШРИФТ
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap&subset=cyrillic-ext");
+
+// ДЕФОЛТНЫЙ ШРИФТ
+$fontFamily: "Inter", sans-serif;
+
+//Обнуление
+* {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+:focus,
+:active {
+	outline: none;
+}
+a:focus,
+a:active {
+	outline: none;
+}
+nav,
+footer,
+header,
+aside {
+	display: block;
+}
+html,
+body {
+	height: 100%;
+	width: 100%;
+	line-height: 1;
+	font-size: 14px;
+	font-family: $fontFamily;
+}
+input,
+button,
+textarea {
+	font-family: inherit;
+}
+label {
+	cursor: pointer;
+}
+input::-ms-clear {
+	display: none;
+}
+button {
+	cursor: pointer;
+}
+button::-moz-focus-inner {
+	padding: 0;
+	border: 0;
+}
+a,
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+ul li {
+	list-style: none;
+}
+img {
+	vertical-align: top;
+}
+
+// ОБЩАЯ СХЕМАТИКА ПРОЕКТА (стили отдельных блоков, вырванных из общей связки, и подключение стилей сущностей)
+@import "spinner";
+
+$md2: 991.98px;
+$md3: 767.98px;
+$md4: 479.98px;
+
+.container {
+	max-width: 1430px;
+	margin: 0 auto;
+	flex: 1 1 1430px;
+}
+
+@import "header";
+
+.container-page {
+	flex: 1 1 auto;
+	display: flex;
+	margin-bottom: 20px;
+}
+.universal-btn {
+	background: #1890ff;
+	border-radius: 4px;
+	padding: 12px 20px;
+	color: #fff;
+	font-weight: 600;
+	@media (min-width: 992px) {
+		&:hover {
+			transform: scale(0.9);
+			background: #40a9ff;
+		}
+	}
+}
+.chief-title {
+	font-weight: 800;
+	font-size: 38px;
+	line-height: 110%;
+	color: #1a1a25;
+	position: relative;
+	&:before {
+		content: "";
+		position: absolute;
+		bottom: -20px;
+		left: 0;
+		background: #000000;
+		border-radius: 2px;
+		height: 1px;
+		width: 2000px;
+		transform: translate(-285px, 0%);
+	}
+}
+.chief-sub-title {
+	font-weight: 800;
+	font-size: 30px;
+	line-height: 120%;
+	color: #000000;
+}
+.element__number {
+	font-weight: bold;
+	font-size: 48px;
+	line-height: 110%;
+	color: #000000;
+	display: inline-block;
+	position: relative;
+	&.active:after {
+		content: "+";
+		color: #1890ff;
+	}
+}
+.swiper-btn {
+	transition: all 0.9s ease 0s;
+	position: absolute;
+	background: #fff;
+	width: 45px;
+	height: 45px;
+	border-radius: 100%;
+	z-index: 1000;
+	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.431);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	img {
+		width: 18px;
+	}
+	@media (min-width: 992px) {
+		&:hover {
+			background: rgb(216, 216, 216);
+		}
+	}
+}
+
+#map {
+	width: 100%;
+	height: 400px;
+	margin-bottom: 20px;
+}
+
+.our-stars {
+	padding: 20px 0;
+	border-bottom: 1px solid #000000;
+	&__title {
+		margin-bottom: 15px;
+	}
+	&__text {
+		color: #fff;
+		position: absolute;
+		bottom: 20px;
+		left: 20px;
+		font-size: 17px;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+	&__container {
+		display: flex;
+		justify-content: center;
+	}
+	&__column {
+		transition: all 0.4s ease 0s;
+		flex: 0 1 12%;
+		cursor: pointer;
+		position: relative;
+		padding: 0 0 50% 0;
+		border-radius: 20px;
+		overflow: hidden;
+		margin-right: 20px;
+		&:last-child {
+			margin-right: 0;
+		}
+		&.active {
+			flex-grow: 1;
+		}
+		img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+}
+.text-card {
+	padding: 20px;
+	&__content {
+		text-align: center;
+		font-size: 17px;
+		line-height: 110%;
+	}
+}
+
+@import "scroll-up";
+@import "welcome";
+@import "adminPanel";
+@import "sidebarCatalog";
+@import "sortLine";
+@import "carContainer";
+@import "carElement";
+@import "groupBodyGoods";
+@import "goods";
+@import "imageCard";
+@import "currentGood";
+@import "quantityController";
+@import "delivery";
+@import "aboutUs";
+@import "brands";
+@import "brand";
+@import "contacts";
+@import "modalWindow";
+@import "message";
+@import "paginations";
+@import "footer";
+@import "login-layot-box";
+@import "notFoundContainer";

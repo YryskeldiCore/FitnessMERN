@@ -1,0 +1,4 @@
+{
+	"endPointForImg": "http://localhost:5984/",
+	"endPointForApi": "http://localhost:5984/api/"
+}
