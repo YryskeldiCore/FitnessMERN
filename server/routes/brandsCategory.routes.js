@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
 		const brandsCategoriesList = await BrandsCategories.find()
 		res.status(200).send(brandsCategoriesList)
 	} catch (err) {
-		console.log(chalk.red.inverse("Ошибка получени brandsCategories.", err.message))
+		console.log(chalk.red.inverse("Ошибка получения brandsCategories.", err.message))
 		res.status(500).json({
 			message: "Ошибка сервера. Обратитесь позже."
 		})

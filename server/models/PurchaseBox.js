@@ -2,11 +2,6 @@ const { Schema, model } = require("mongoose")
 
 const schema = new Schema({
 	carState: [
-		// {
-		// type: Schema.Types.ObjectId,
-		// ref: "Car",
-		// required: true
-		// }
 		Schema.Types.Mixed
 	],
 	guarantee: [{ name: String, warrantyPrice: Number, years: Number }],
@@ -42,7 +37,7 @@ const schema = new Schema({
 		time: {
 			type: String,
 			required: true
-		},
+		}
 	}
 }, {
 	timestamps: true

@@ -1,7 +1,7 @@
 const multer = require("multer")
 
 const typesImages = ["image/jpeg", "image/png", "image/jpg", "image/svg"]
-// Сохранение картинки в папке сервера за счет multer
+
 const storage = multer.diskStorage({ // create store для картинок
 	destination(req, file, cb) {
 		cb(null, "imagesGoods/") // папка, куда сохраняются картинки

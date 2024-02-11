@@ -15,8 +15,7 @@ module.exports = (req, res, next) => {
 				}
 			})
 		}
-		const dataDecodeToken = accessTokenService.validateAccessToken(token)
-		req.user = dataDecodeToken
+		req.user = accessTokenService.validateAccessToken(token)
 		next()
 	} catch (err) {
 		console.log(chalk.red.inverse("Ошибка при декодировании токена."), err.message)

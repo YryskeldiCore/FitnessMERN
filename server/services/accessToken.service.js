@@ -3,7 +3,7 @@ const config = require("config")
 const Token = require("../models/Token")
 const chalk = require("chalk")
 
-class AccessTokenService{
+class AccessTokenService {
 	generateTokens(controlData) {
 		const accessToken = jwt.sign(controlData, config.get("accessTokenSecret"), {
 			expiresIn: "1h"
@@ -15,6 +15,7 @@ class AccessTokenService{
 			expiresIn: 3600
 		}
 	}
+
 	async saveRefreshToken(refreshToken, userId) {
 		try {
 			const existingRefreshToken = await Token.findOne({ userId: userId })
@@ -22,12 +23,12 @@ class AccessTokenService{
 				existingRefreshToken.refreshToken = refreshToken
 				return existingRefreshToken.save()
 			}
-			const newRefreshTokenEssence = await Token.create({ userId, refreshToken })
-			return newRefreshTokenEssence
+			return await Token.create({ userId, refreshToken })
 		} catch (err) {
 			console.log(chalk.red.inverse("Что-то пошло не так при сохранении refreshToken. Попробуйте позже.", err.message))
 		}
 	}
+
 	validateRefresh(refreshToken) {
 		try {
 			return jwt.verify(refreshToken, config.get("refreshTokenSecret"))
@@ -36,6 +37,7 @@ class AccessTokenService{
 			return null
 		}
 	}
+
 	validateAccessToken(accessToken) {
 		try {
 			return jwt.verify(accessToken, config.get("accessTokenSecret"))
@@ -44,6 +46,7 @@ class AccessTokenService{
 			return null
 		}
 	}
+
 	async findRefreshInCollection(refreshToken) {
 		try {
 			return await Token.findOne({ refreshToken: refreshToken })

@@ -8,73 +8,70 @@ const mongoose = require("mongoose")
 
 const router = express.Router({ mergeParams: true })
 
-router
-	.route("/:id")
-		.get(authMiddleware, async (req, res) => {
-			try {
-				if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
-					return res.status(400).send({
-						error: {
-							message: "Пользователь с таким Token не существует",
-							code: 400
-						}
-					})
+router.route("/:id").get(authMiddleware, async (req, res) => {
+	try {
+		if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
+			return res.status(400).send({
+				error: {
+					message: "Пользователь с таким Token не существует",
+					code: 400
 				}
-				const { id } = req.params
-				if (!(id === req.user._id)) {
-					return res.status(401).send({
-						error: {
-							message: "Unauthorized",
-							code: 401
-						}
-					})
+			})
+		}
+		const { id } = req.params
+		if (!(id === req.user._id)) {
+			return res.status(401).send({
+				error: {
+					message: "Unauthorized",
+					code: 401
 				}
-				const existingUser = await User.findById(id)
-				
-				res.status(200).send(existingUser)
-			} catch (err) {
-				console.log(chalk.red.inverse("Ошибка при получении данных о currentUser."), err.message)
-				res.status(500).json({
-					message: "Ошибка сервера. Обратитесь позже."
+			})
+		}
+		const existingUser = await User.findById(id)
+		res.status(200).send(existingUser)
+	} catch (err) {
+		console.log(chalk.red.inverse("Ошибка при получении данных о currentUser."), err.message)
+		res.status(500).json({
+			message: "Ошибка сервера. Обратитесь позже."
+		})
+	}
+})
+	.patch(authMiddleware, async (req, res) => {
+		try {
+			if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
+				return res.status(400).send({
+					error: {
+						message: "Пользователь с таким Token не существует",
+						code: 400
+					}
 				})
 			}
-		})
-		.patch(authMiddleware, async (req, res) => {
-			try {
-				if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
-					return res.status(400).send({
-						error: {
-							message: "Пользователь с таким Token не существует",
-							code: 400
-						}
-					})
-				}
-				const { id } = req.params
-				const user = await User.findById(id)
-				if(user.isAdmin || (id !== req.user._id.toString())) {
-					return res.status(401).send({
-						error: {
-							message: "Unauthorized",
-							code: 401
-						}
-					})
-				}
-				const { numberOfPurchases } = req.body
-				if (user.numberOfPurchases) {
-					user.numberOfPurchases += numberOfPurchases
-				} else {
-					user.numberOfPurchases = numberOfPurchases
-				}
-				await user.save()
+			const { id } = req.params
+			const user = await User.findById(id)
+			if (user.isAdmin || (id !== req.user._id.toString())) {
+				return res.status(401).send({
+					error: {
+						message: "Unauthorized",
+						code: 401
+					}
+				})
+			}
+			const { numberOfPurchases } = req.body
+			if (user.numberOfPurchases) {
+				user.numberOfPurchases += numberOfPurchases
+			} else {
+				user.numberOfPurchases = numberOfPurchases
+			}
+			await user.save()
 
-				res.status(200).send(null)
-			} catch (err) {
-				console.log(chalk.red.inverse("Ошибка при обновлении user."), err.message)
-				res.status(500).json({
-					message: "Ошибка сервера. Обратитесь позже."
-				})
-			}
-		})
+			res.status(200).send(null)
+		} catch (err) {
+			console.log(chalk.red.inverse("Ошибка при обновлении user."), err.message)
+			res.status(500).json({
+				message: "Ошибка сервера. Обратитесь позже."
+			})
+		}
+	})
 
 router.post("/", [
 	check("login", "Поле login должно быть заполнено.").exists(),
@@ -84,19 +81,13 @@ router.post("/", [
 	check("surName", "Фамилия должна быть заполнена.").exists(),
 	check("password", "Пароль должен быть обязательно заполнен.").exists(),
 	check("password", "Пароль должен содержать хотя бы одну цифру.").custom(value => {
-		const statusValidate = /\d+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /\d+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы одну букву в верхнем регистре.`).custom((value) => {
-		const statusValidate = /[A-Z]+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /[A-Z]+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы один специальный символ.`).custom((value) => {
-		const statusValidate = /(?=.*[!@#$%&^*?])/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /(?=.*[!@#$%&^*?])/g.test(value)
 	}),
 	check("password", `Ошибка валидации "password". Минимальная длина 8 символов.`).isLength({ min: 8 }),
 	async (req, res) => {
@@ -129,10 +120,8 @@ router.post("/", [
 					}
 				})
 			}
-			const hashNewPassword = await bcrypt.hash(data.password, 12)
-			existingUser.password = hashNewPassword
+			existingUser.password = await bcrypt.hash(data.password, 12)
 			await existingUser.save()
-			
 			res.status(201).send(null)
 		} catch (err) {
 			console.log(chalk.red.inverse("Возникла ошибка при восстановлении пароля."), err.message)

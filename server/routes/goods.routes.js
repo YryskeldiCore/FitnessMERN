@@ -11,78 +11,161 @@ const path = require("path")
 const router = express.Router({ mergeParams: true })
 
 router.route("/").get(async (req, res) => {
+	try {
+		const goodsList = await Goods.find()
+		res.status(200).send(goodsList)
+	} catch (err) {
+		console.log(chalk.red.inverse("Ошибка получения goods."), err.message)
+		res.status(500).json({
+			message: "Проблемы с сервером. Обратитесь позже."
+		})
+	}
+}).post(authMiddleware, [
+	check("name", "Поле name должно быть заполнено").exists(),
+	check("price", `Поле "Цена" должно быть обязательно заполнено...`).exists(),
+	check("price", `Поле "Цена" должно состоять только из цифр...`).custom(value => {
+		return /^\d+$/g.test(value)
+	}),
+	check("price", `Поле "Цена" должно быть больше 0 и целым числом...`).custom(value => {
+		return /^[1-9][0-9]*$/g.test(value)
+	}),
+	check("description", `Поле "Описание" должно быть обязательно заполнено...`).exists(),
+	check("imagesPath", `Поле "Путь для изображения" обязательно для заполнения...`).exists(),
+	check("imagesPath", "Введенная строчка не является форматом изображения. Допустимые (.png .svg .jpg .jpeg)").custom(value => {
+		return /\.(png|svg|jpe?g)$/g.test(value)
+	}),
+	check("category", `Поле "Категория" обязательно для заполнения...`).exists(),
+	check("totalInStock", `Поле "Количество на складе" обязательно для заполнения...`).exists(),
+	check("totalInStock", `Поле "Количество на складе" должно состоять только из цифр...`).custom(value => {
+		return /^\d+$/g.test(value)
+	}),
+	check("totalInStock", `Нет смысла добавлять товар в БД, если его нет на складе...`).custom(value => {
+		return /^[1-9][0-9]*$/g.test(value)
+	}),
+	async (req, res) => {
 		try {
-			const goodsList = await Goods.find()
-			res.status(200).send(goodsList)
+			if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
+				return res.status(400).send({
+					error: {
+						message: "Пользователь по такому Token не найден",
+						code: 400
+					}
+				})
+			}
+			const existingUser = await User.findById(req.user._id)
+			if (!existingUser || !existingUser.isAdmin) {
+				return res.status(401).send({
+					error: {
+						message: "Unauthorized",
+						code: 401
+					}
+				})
+			}
+			const error = validationResult(req)
+			if (!error.isEmpty()) {
+				return res.status(400).send({
+					error: {
+						message: "INVALID_DATA",
+						code: 400
+					}
+				})
+			}
+			const existingGoodByName = await Goods.findOne({ name: req.body.name })
+			if (existingGoodByName) {
+				return res.status(400).send({
+					error: {
+						message: "COINCIDENT_NAME",
+						code: 400
+					}
+				})
+			}
+			const existingGoodByImagesPath = await Goods.findOne({ imagesPath: req.body.imagesPath })
+			if (existingGoodByImagesPath) {
+				return res.status(400).send({
+					error: {
+						message: "COINCIDENT_IMAGESPATH",
+						code: 400
+					}
+				})
+			}
+			delete req.body.imageFile
+			const newGood = await Goods.create({
+				...req.body
+			})
+
+			res.status(201).send(newGood)
 		} catch (err) {
-			console.log(chalk.red.inverse("Ошибка получения goods."), err.message)
-			res.status(500).json({
-				message: "Проблемы с сервером. Обратитесь позже."
+			console.log(chalk.red.inverse("Произошла ошибка при создании товара."), err.message)
+			res.status(500).send({
+				error: {
+					message: "Проблемы с сервером. Обратитесь позже.",
+					code: 500
+				}
 			})
 		}
-	})
-		.post(authMiddleware, [
-			check("name", "Поле name должно быть заполнено").exists(),
-			check("price", `Поле "Цена" должно быть обязательно заполнено...`).exists(),
-			check("price", `Поле "Цена" должно состоять только из цифр...`).custom(value => {
-				const statusValidate = /^\d+$/g.test(value)
-				if(!statusValidate) return false
-				return true
-			}),
-			check("price", `Поле "Цена" должно быть больше 0 и целым числом...`).custom(value => {
-				const statusValidate = /^[1-9][0-9]*$/g.test(value)
-				if (!statusValidate) return false
-				return true
-			}),
-			check("description", `Поле "Описание" должно быть обязательно заполнено...`).exists(),
-			check("imagesPath", `Поле "Путь для изображения" обязательно для заполнения...`).exists(),
-			check("imagesPath", "Введенная строчка не является форматом изображения. Допустимые (.png .svg .jpg .jpeg)").custom(value => {
-				const statusValidate = /\.(png|svg|jpe?g)$/g.test(value)
-				if (!statusValidate) return false
-				return true
-			}),
-			check("category", `Поле "Категория" обязательно для заполнения...`).exists(),
-			check("totalInStock", `Поле "Количество на складе" обязательно для заполнения...`).exists(),
-			check("totalInStock", `Поле "Количество на складе" должно состоять только из цифр...`).custom(value => {
-				const statusValidate = /^\d+$/g.test(value)
-				if(!statusValidate) return false
-				return true
-			}),
-			check("totalInStock", `Нет смысла добавлять товар в БД, если его нет на складе...`).custom(value => {
-				const statusValidate = /^[1-9][0-9]*$/g.test(value)
-				if (!statusValidate) return false
-				return true
-			}),
-			async (req, res) => {
-				try {
-					if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
-						return res.status(400).send({
-							error: {
-								message: "Пользователь по такому Token не найден",
-								code: 400
-							}
-						})
+	}
+])
+
+router.route("/:id").patch(authMiddleware, [
+	check("name", "Поле name должно быть заполнено").exists(),
+	check("price", `Поле "Цена" должно быть обязательно заполнено...`).exists(),
+	check("price", `Поле "Цена" должно состоять только из цифр...`).custom(value => {
+		return /^\d+$/g.test(value)
+	}),
+	check("price", `Поле "Цена" должно быть больше 0 и целым числом...`).custom(value => {
+		return /^[1-9][0-9]*$/g.test(value)
+	}),
+	check("description", `Поле "Описание" должно быть обязательно заполнено...`).exists(),
+	check("imagesPath", `Поле "Путь для изображения" обязательно для заполнения...`).exists(),
+	check("imagesPath", "Введенная строчка не является форматом изображения. Допустимые (.png .svg .jpg .jpeg)").custom(value => {
+		return /\.(png|svg|jpe?g)$/g.test(value)
+	}),
+	check("category", `Поле "Категория" обязательно для заполнения...`).exists(),
+	check("totalInStock", `Поле "Количество на складе" должно состоять только из цифр...`).custom(value => {
+		return /^\d+$/g.test(value)
+	}),
+	async (req, res) => {
+		try {
+			if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
+				return res.status(400).send({
+					error: {
+						message: "Пользователь с таким Token не существует",
+						code: 400
 					}
-					const existingUser = await User.findById(req.user._id)
-					if (!existingUser || !existingUser.isAdmin) {
-						return res.status(401).send({
-							error: {
-								message: "Unauthorized",
-								code: 401
-							}
-						})
+				})
+			}
+			const { id } = req.params
+			if (!mongoose.Types.ObjectId.isValid(id)) {
+				return res.status(400).send({
+					error: {
+						message: "Единица не найдена",
+						code: 400
 					}
-					const error = validationResult(req)
-					if (!error.isEmpty()) {
-						return res.status(400).send({
-							error: {
-								message: "INVALID_DATA",
-								code: 400
-							}
-						})
+				})
+			}
+			const existingGood = await Goods.findById(id)
+			if (!existingGood || (id !== req.body._id)) {
+				return res.status(400).send({
+					error: {
+						message: "Товар с таким id не найден",
+						code: 400
 					}
-					const existingGoodByName = await Goods.findOne({ name: req.body.name })
-					if (existingGoodByName) {
+				})
+			}
+			const existingUser = await User.findById(req.user._id)
+			if (!existingUser) {
+				return res.status(401).send({
+					error: {
+						message: "Unauthorized",
+						code: 401
+					}
+				})
+			}
+			if (existingUser.isAdmin) {
+				const existingGoodByName = await Goods.findOne({ name: req.body.name })
+				const existingGoodByImagesPath = await Goods.findOne({ imagesPath: req.body.imagesPath })
+				if (existingGoodByName || existingGoodByImagesPath) {
+					if (existingGoodByName && existingGoodByName._id.toString() !== existingGood._id.toString()) {
 						return res.status(400).send({
 							error: {
 								message: "COINCIDENT_NAME",
@@ -90,8 +173,7 @@ router.route("/").get(async (req, res) => {
 							}
 						})
 					}
-					const existingGoodByImagesPath = await Goods.findOne({ imagesPath: req.body.imagesPath })
-					if (existingGoodByImagesPath) {
+					if (existingGoodByImagesPath && existingGoodByImagesPath._id.toString() !== existingGood._id.toString()) {
 						return res.status(400).send({
 							error: {
 								message: "COINCIDENT_IMAGESPATH",
@@ -99,125 +181,23 @@ router.route("/").get(async (req, res) => {
 							}
 						})
 					}
-					delete req.body.imageFile
-					const newGood = await Goods.create({
-						...req.body
-					})
-
-					res.status(201).send(newGood)
-				} catch (err) {
-					console.log(chalk.red.inverse("Произошла ошибка при создании товара."), err.message)
-					res.status(500).send({
-					error: {
-						message: "Проблемы с сервером. Обратитесь позже.",
-						code: 500
-					}
-				})
-			}
-		}
-	])
-
-router.route("/:id").patch(authMiddleware, [
-			check("name", "Поле name должно быть заполнено").exists(),
-			check("price", `Поле "Цена" должно быть обязательно заполнено...`).exists(),
-			check("price", `Поле "Цена" должно состоять только из цифр...`).custom(value => {
-				const statusValidate = /^\d+$/g.test(value)
-				if(!statusValidate) return false
-				return true
-			}),
-			check("price", `Поле "Цена" должно быть больше 0 и целым числом...`).custom(value => {
-				const statusValidate = /^[1-9][0-9]*$/g.test(value)
-				if (!statusValidate) return false
-				return true
-			}),
-			check("description", `Поле "Описание" должно быть обязательно заполнено...`).exists(),
-			check("imagesPath", `Поле "Путь для изображения" обязательно для заполнения...`).exists(),
-			check("imagesPath", "Введенная строчка не является форматом изображения. Допустимые (.png .svg .jpg .jpeg)").custom(value => {
-				const statusValidate = /\.(png|svg|jpe?g)$/g.test(value)
-				if (!statusValidate) return false
-				return true
-			}),
-			check("category", `Поле "Категория" обязательно для заполнения...`).exists(),
-			check("totalInStock", `Поле "Количество на складе" должно состоять только из цифр...`).custom(value => {
-				const statusValidate = /^\d+$/g.test(value)
-				if(!statusValidate) return false
-				return true
-			}),
-			async (req, res) => {
-				try {
-					if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
-						return res.status(400).send({
-							error: {
-								message: "Пользователь с таким Token не существует",
-								code: 400
-							}
-						})
-					}
-					const { id } = req.params
-					if (!mongoose.Types.ObjectId.isValid(id)) {
-						return res.status(400).send({
-							error: {
-								message: "Единица не найдена",
-								code: 400
-							}
-						})
-					}
-					const existingGood = await Goods.findById(id)
-					if (!existingGood || (id !== req.body._id)) {
-						return res.status(400).send({
-							error: {
-								message: "Товар с таким id не найден",
-								code: 400
-							}
-						})
-					}
-					const existingUser = await User.findById(req.user._id)
-			if (!existingUser) {
-				return res.status(401).send({
-							error: {
-								message: "Unauthorized",
-								code: 401
-							}
-						})
-					}
-					if (existingUser.isAdmin) {
-						const existingGoodByName = await Goods.findOne({ name: req.body.name })
-						const existingGoodByImagesPath = await Goods.findOne({ imagesPath: req.body.imagesPath})
-						if (existingGoodByName || existingGoodByImagesPath) {
-							if (existingGoodByName && existingGoodByName._id.toString() !== existingGood._id.toString()) {
-								return res.status(400).send({
-									error: {
-										message: "COINCIDENT_NAME",
-										code: 400
-									}
-								})
-							}
-							if (existingGoodByImagesPath && existingGoodByImagesPath._id.toString() !== existingGood._id.toString()) {
-								return res.status(400).send({
-									error: {
-										message: "COINCIDENT_IMAGESPATH",
-										code: 400
-									}
-								})
-							}
-						}
-						const updatedGood = await Goods.findByIdAndUpdate(id, req.body, {new: true})
-
-						res.status(200).send(updatedGood)
-					} else {
-						const updatedGood = await Goods.findByIdAndUpdate(id, { totalInStock: req.body.totalInStock }, { new: true })
-						
-						res.status(200).send(updatedGood)
-					}
-				} catch (err) {
-					console.log(chalk.red.inverse("Проблемы с обновление данных товара"), err.message)
-					res.status(500).json({
-						message: "Проблемы с сервером. Обратитесь позже."
-					})
 				}
+				const updatedGood = await Goods.findByIdAndUpdate(id, req.body, { new: true })
+
+				res.status(200).send(updatedGood)
+			} else {
+				const updatedGood = await Goods.findByIdAndUpdate(id, { totalInStock: req.body.totalInStock }, { new: true })
+
+				res.status(200).send(updatedGood)
 			}
-		])
-.delete(authMiddleware, async (req, res) => {
+		} catch (err) {
+			console.log(chalk.red.inverse("Проблемы с обновление данных товара"), err.message)
+			res.status(500).json({
+				message: "Проблемы с сервером. Обратитесь позже."
+			})
+		}
+	}
+]).delete(authMiddleware, async (req, res) => {
 	try {
 		if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
 			return res.status(400).send({

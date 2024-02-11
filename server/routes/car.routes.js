@@ -57,8 +57,7 @@ router.route("/")
 					}
 				}
 			})
-			if (countError === 0) return true
-			return false
+			return countError === 0
 		}),
 		async (req, res) => {
 			try {
@@ -101,13 +100,11 @@ router.route("/")
 					existingGood.count = req.body.count
 					existingGood.totalInStock = req.body.totalInStock
 					await existingGood.save()
-
 					res.status(201).send(null)
 				} else {
 					await Car.create({
 						...req.body
 					})
-
 					res.status(201).send(null)
 				}
 			} catch (err) {

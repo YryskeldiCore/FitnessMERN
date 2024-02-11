@@ -13,19 +13,13 @@ router.post("/signUp", [
 	check("password", `Пароль обязательно должен существовать.`).exists(),
 	check("password", `Ошибка валидации "password". Минимальная длина 8 символов.`).isLength({ min: 8 }),
 	check("password", `"password" должен содержать хотя бы одну цифру.`).custom((value) => {
-		const statusValidate = /\d+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /\d+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы одну букву в верхнем регистре.`).custom((value) => {
-		const statusValidate = /[A-Z]+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /[A-Z]+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы один специальный символ.`).custom((value) => {
-		const statusValidate = /(?=.*[!@#$%&^*?])/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /(?=.*[!@#$%&^*?])/g.test(value)
 	}),
 	async (req, res) => {
 		try {
@@ -38,7 +32,6 @@ router.post("/signUp", [
 					}
 				})
 			}
-
 			const { email, password } = req.body
 			const existingUser = await User.findOne({ email: email })
 			if (existingUser) {
@@ -78,19 +71,13 @@ router.post("/signInWithPassword", [
 	check("password", `Пароль обязательно должен существовать.`).exists(),
 	check("password", `Ошибка валидации "password". Минимальная длина 8 символов.`).isLength({ min: 8 }),
 	check("password", `"password" должен содержать хотя бы одну цифру.`).custom((value) => {
-		const statusValidate = /\d+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /\d+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы одну букву в верхнем регистре.`).custom((value) => {
-		const statusValidate = /[A-Z]+/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /[A-Z]+/g.test(value)
 	}),
 	check("password", `"password" должен содержать хотя бы один специальный символ.`).custom((value) => {
-		const statusValidate = /(?=.*[!@#$%&^*?])/g.test(value)
-		if (!statusValidate) return false
-		return true
+		return /(?=.*[!@#$%&^*?])/g.test(value)
 	}),
 	async (req, res) => {
 		try {

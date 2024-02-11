@@ -7,7 +7,6 @@ const router = express.Router({ mergeParams: true })
 router.get("/", async (req, res) => {
 	try {
 		const categoriesList = await Categories.find()
-		
 		res.status(200).send(categoriesList)
 	} catch (err) {
 		console.log(chalk.red.inverse("Проблемы с получением категорий"), err.message)
