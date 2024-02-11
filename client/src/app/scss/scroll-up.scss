@@ -5,13 +5,14 @@
 	z-index: 1000;
 	cursor: pointer;
 	transition: all 0.2s ease 0s;
+	border-radius: 100%;
 	&__container {
 		transition: all 0.4s ease 0s;
-		background: white;
+		background: #fff;
 		position: relative;
-		width: 90px;
-		height: 90px;
-		border-radius: 20px;
+		border-radius: 100%;
+		width: 60px;
+		height: 60px;
 		img {
 			position: absolute;
 			top: 0;

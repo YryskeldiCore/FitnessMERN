@@ -99,16 +99,6 @@
 		"classesList": "menu-header__list",
 		"classesLink": "menu-header__link"
 	},
-	"menuBrend": {
-		"data": [
-			{ "label": "Bowflex", "path": "/brands/61f84954a6bc9a12678f0bd2" },
-			{ "label": "Sole", "path": "/brands/61f84954a6bc9a12678f0be6" },
-			{ "label": "NeoFit", "path": "/brands/61f84954a6bc9a12678f0bdd" }
-		],
-		"classesNav": "brends__menu menu-brends",
-		"classesList": "menu-brends__list",
-		"classesLink": "menu-brends__link"
-	},
 	"sliderContacts": ["slide1.jpg", "slide2.jpg", "slide3.jpg"],
 	"contactsDepartments": [
 		{

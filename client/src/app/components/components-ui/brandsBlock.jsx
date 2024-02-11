@@ -3,13 +3,12 @@ import BrandsHeadFilter from "./brandsHeadFilter"
 import BrandsSubjectFilter from "./brandsSubjectFilter"
 import BrandsList from "./brandsList"
 import doubleFilter from "../../utils/doubleFilter"
-import MenuNav from "../common/menuNav"
-import config from "../../configAuxiliary.json"
 import withMessage from "../../HOC/withMessage"
 import { getBrandsCategoryData } from "../../store/brandCategory"
 import { getBrandCategorySubjectData } from "../../store/brandCategorySubject"
 import { useSelector } from "react-redux"
 import { getBrands } from "../../store/brand"
+import { Link } from "react-router-dom"
 
 const BrandsBlock = () => {
 	const [categoryHead, setCategoryHead] = useState(null)
@@ -51,10 +50,20 @@ const BrandsBlock = () => {
 			/>
 			<div className="brands__line">
 				<div className="brands__col">
-					<MenuNav config={config.menuBrend} />
+					<nav className="brends__menu menu-brends">
+						<ul className="menu-brends__list">
+							{newArrayBrands.filter(item => item.additionalPage).map((item, index) => (
+								<li key={index}>
+									<Link to={`/brands/${item._id}`} className="menu-brends__link">
+										{item.name}
+									</Link>
+								</li>
+							))}
+						</ul>
+					</nav>
 				</div>
 				<div className="brands__col">
-					<BrandsListWithMessage brands={newArrayBrands} />
+					<BrandsListWithMessage brands={newArrayBrands}/>
 				</div>
 			</div>
 		</React.Fragment>
