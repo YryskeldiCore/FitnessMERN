@@ -14,7 +14,7 @@ const supportSlice = createSlice({
 		supportRequested(state) {
 			state.isLoading = true
 		},
-		supportRecived(state, action) {
+		supportReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -22,7 +22,7 @@ const supportSlice = createSlice({
 			state.error = action.payload
 			state.isLoading = false
 		},
-		supportStopedLoader(state) {
+		supportStoppedLoader(state) {
 			state.isLoading = false
 		},
 		supportDeletedElement(state, action) {
@@ -44,8 +44,8 @@ const {
 	supportRemovedError,
 	supportCreateRequestField,
 	supportDeletedElement,
-	supportStopedLoader,
-	supportRecived,
+	supportStoppedLoader,
+	supportReceived,
 	supportRequestField
 } = actions
 
@@ -72,7 +72,7 @@ export function fetchAllSupportData() {
 		dispatch(supportRequested())
 		try {
 			const { content } = await supportService.fetchAll()
-			dispatch(supportRecived(content))
+			dispatch(supportReceived(content))
 		} catch (err) {
 			dispatch(supportRequestField(err.message))
 		}
@@ -80,7 +80,7 @@ export function fetchAllSupportData() {
 }
 export function stopLoaderSupport() {
 	return (dispatch) => {
-		dispatch(supportStopedLoader())
+		dispatch(supportStoppedLoader())
 	}
 }
 export function createSupport(body) {

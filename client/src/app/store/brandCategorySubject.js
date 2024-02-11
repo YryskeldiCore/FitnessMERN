@@ -14,7 +14,7 @@ const brandCategorySubject = createSlice({
 		brandCategorySubjectRequested(state) {
 			state.isLoading = true
 		},
-		brandCategorySubjectRecived(state, action) {
+		brandCategorySubjectReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -28,7 +28,7 @@ const brandCategorySubject = createSlice({
 const { actions, reducer: brandCategorySubjectReducer } = brandCategorySubject
 const {
 	brandCategorySubjectRequested,
-	brandCategorySubjectRecived,
+	brandCategorySubjectReceived,
 	brandCategorySubjectRequestField
 } = actions
 
@@ -38,7 +38,7 @@ export function fetchAllBrandCategorySubject() {
 		dispatch(brandCategorySubjectRequested())
 		try {
 			const { content } = await brandsSubjectService.fetchAll()
-			dispatch(brandCategorySubjectRecived(content))
+			dispatch(brandCategorySubjectReceived(content))
 		} catch (err) {
 			brandCategorySubjectRequestField(err.message)
 		}

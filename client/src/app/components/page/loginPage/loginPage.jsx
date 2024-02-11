@@ -19,7 +19,7 @@ const LoginPage = () => {
 			isRequired: { message: `Поле "Логин" обязательно для заполнения...` }
 		},
 		email: {
-			isRequired: { message: `Поле "Почта" обязаельно для заполнения...` },
+			isRequired: { message: `Поле "Почта" обязательно для заполнения...` },
 			isEmail: { message: `Поле "Почта" не удовлетворяет требованиям...` }
 		},
 		password: {

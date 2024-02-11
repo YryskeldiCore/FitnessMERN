@@ -3,7 +3,6 @@ import Good from "./good"
 import PropTypes from "prop-types"
 
 const GoodsList = ({ goods }) => {
-	console.log("goods", goods)
 	return (
 		<div className="goods-list-container">
 			{goods.map((item) => (

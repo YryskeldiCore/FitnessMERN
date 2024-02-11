@@ -1,4 +1,4 @@
-import { createSlice, createAction } from "@reduxjs/toolkit"
+import { createAction, createSlice } from "@reduxjs/toolkit"
 import carService from "../services/car.service"
 
 const initialState = {
@@ -14,7 +14,7 @@ const carSlice = createSlice({
 		carRequested(state) {
 			state.isLoading = true
 		},
-		carRecived(state, action) {
+		carReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -22,7 +22,7 @@ const carSlice = createSlice({
 			state.error = action.payload
 			state.isLoading = false
 		},
-		carStopedLoader(state) {
+		carStoppedLoader(state) {
 			state.isLoading = false
 		},
 		carDeletedElement(state, action) {
@@ -33,11 +33,10 @@ const carSlice = createSlice({
 				state.entities = newArray.filter((el) => el._id !== action.payload)
 			}
 		},
-		carEddedElement(state, action) {
-			const newArray = action.payload.targetElement
+		carAddedElement(state, action) {
+			state.entities = action.payload.targetElement
 				? [...action.payload.newArray, action.payload.correctElement]
 				: [...state.entities, action.payload.data]
-			state.entities = newArray
 		},
 		carDeletedElementRequestField(state, action) {
 			state.error = action.payload
@@ -47,13 +46,13 @@ const carSlice = createSlice({
 
 const { actions, reducer: carReducer } = carSlice
 const {
-	carEddedElement,
+	carAddedElement,
 	carDeletedElementRequestField,
 	carDeletedElement,
 	carRequested,
-	carRecived,
+	carReceived,
 	carRequestField,
-	carStopedLoader
+	carStoppedLoader
 } = actions
 
 const carDeletedElementRequest = createAction("car/carDeletedElementRequest")
@@ -68,7 +67,7 @@ export function fetchAllCar(currentUser) {
 		dispatch(carRequested())
 		try {
 			const { content } = await carService.fetchAll(currentUser)
-			dispatch(carRecived(content))
+			dispatch(carReceived(content))
 		} catch (err) {
 			carRequestField(err.message)
 		}
@@ -76,7 +75,7 @@ export function fetchAllCar(currentUser) {
 }
 export function doStopLoaderCar() {
 	return (dispatch) => {
-		dispatch(carStopedLoader())
+		dispatch(carStoppedLoader())
 	}
 }
 export function deleteElementAtCar(id) {
@@ -117,9 +116,7 @@ export function pushElementAtCar(data) {
 				correctElement = data
 			}
 			await carService.push(correctElement)
-			dispatch(
-				carEddedElement({ targetElement, newArray, correctElement, data })
-			)
+			dispatch(carAddedElement({ targetElement, newArray, correctElement, data }))
 		} catch (err) {
 			const { code, message } = err?.response?.data?.error
 			if (code !== 500) {

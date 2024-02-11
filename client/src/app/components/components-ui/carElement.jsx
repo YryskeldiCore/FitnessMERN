@@ -5,7 +5,6 @@ import UniversalButton from "../common/universalButton"
 import config from "../../config.json"
 
 const CarElement = ({ count, name, price, _id, onDelete, pathServerImage }) => {
-	const sumCount = count * price
 	return (
 		<div className="car-element">
 			<div className="car-element__container">
@@ -29,7 +28,7 @@ const CarElement = ({ count, name, price, _id, onDelete, pathServerImage }) => {
 					<div className="car-element__count">{`Количество: ${count}`}</div>
 				</div>
 				<div className="car-element__column">
-					<div className="car-element__price">{`Цена за (${count}x): ${sumCount}р`}</div>
+					<div className="car-element__price">{`Цена за (${count}x): ${count * price}сом`}</div>
 				</div>
 				<div className="car-element__column">
 					<UniversalButton

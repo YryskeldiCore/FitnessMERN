@@ -17,7 +17,7 @@ const categorySlice = createSlice({
 		categoryRequested(state) {
 			state.isLoading = true
 		},
-		categoryRequestRecived(state, action) {
+		categoryRequestReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -29,17 +29,17 @@ const categorySlice = createSlice({
 })
 
 const { actions, reducer: categoryReducer } = categorySlice
-const { categoryRequested, categoryRequestRecived, categoryRequestField } =
+const { categoryRequested, categoryRequestReceived, categoryRequestField } =
 	actions
 
 // Actions
-export function fatchAllCategoryData() {
+export function fetchAllCategoryData() {
 	return async (dispatch) => {
 		dispatch(categoryRequested())
 		try {
 			const { content } = await categoryService.fetchAll()
 			sortData(content, configAuxiliary.configSortedCategory)
-			dispatch(categoryRequestRecived(content))
+			dispatch(categoryRequestReceived(content))
 		} catch (err) {
 			categoryRequestField(err.message)
 			console.log("Expected error category...")

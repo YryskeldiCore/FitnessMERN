@@ -14,7 +14,7 @@ const subscriptionSlice = createSlice({
 		subscriptionRequested(state) {
 			state.isLoading = true
 		},
-		subscriptionRecived(state, action) {
+		subscriptionReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -22,7 +22,7 @@ const subscriptionSlice = createSlice({
 			state.error = action.payload
 			state.isLoading = false
 		},
-		subscriptionStopedLoader(state) {
+		subscriptionStoppedLoader(state) {
 			state.isLoading = false
 		},
 		subscriptionDeletedSub(state, action) {
@@ -44,8 +44,8 @@ const {
 	subscriptionRemovedError,
 	subscriptionCreateRequestField,
 	subscriptionDeletedSub,
-	subscriptionStopedLoader,
-	subscriptionRecived,
+	subscriptionStoppedLoader,
+	subscriptionReceived,
 	subscriptionRequestField
 } = actions
 
@@ -81,7 +81,7 @@ export function fetchAllSubscriptionData() {
 		dispatch(subscriptionRequested())
 		try {
 			const { content } = await subscriptionService.fetchAll()
-			dispatch(subscriptionRecived(content))
+			dispatch(subscriptionReceived(content))
 		} catch (err) {
 			dispatch(subscriptionRequestField(err.message))
 		}
@@ -89,7 +89,7 @@ export function fetchAllSubscriptionData() {
 }
 export function subscriptionStopLoader() {
 	return (dispatch) => {
-		dispatch(subscriptionStopedLoader())
+		dispatch(subscriptionStoppedLoader())
 	}
 }
 export function createSubscription(data) {

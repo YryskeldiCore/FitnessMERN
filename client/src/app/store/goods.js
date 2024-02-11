@@ -16,7 +16,7 @@ const goodsSlice = createSlice({
 			state.isLoading = true
 			state.error = null
 		},
-		goodsRequestRecived(state, action) {
+		goodsRequestReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -69,7 +69,7 @@ const {
 	goodsCreatedGood,
 	goodsRequested,
 	goodsUpdatedGood,
-	goodsRequestRecived,
+	goodsRequestReceived,
 	goodsRequestField,
 	goodsDeletedGood
 } = actions
@@ -149,7 +149,7 @@ export function fetchAllGoodsData() {
 		dispatch(goodsRequested())
 		try {
 			const { content } = await goodsService.fetchAll()
-			dispatch(goodsRequestRecived(content))
+			dispatch(goodsRequestReceived(content))
 		} catch (err) {
 			dispatch(goodsRequestField(err.message))
 			console.log("Expected Error goods...")

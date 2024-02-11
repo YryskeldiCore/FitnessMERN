@@ -15,28 +15,18 @@ const AdminPanelSupportList = () => {
 				return (
 					<div className="block-support__el-container" key={index}>
 						<div className="block-support__element">
-							<span
-								onClick={() => {
-									handlerClick(index)
-								}}
-							>
+							<span onClick={() => { handlerClick(index) }}>
 								{item.name}
 							</span>
 							<a href={`mailto:${item.email}`}>{item.email}</a>
 							<img
-								onClick={() => {
-									handlerClick(index)
-								}}
+								onClick={() => { handlerClick(index) }}
 								className={spoiler === index ? " active" : ""}
 								src="/img/icons/spoiler-arrow.svg"
 								alt="Стрелка"
 							/>
 						</div>
-						<div
-							className={
-								"block-support__message" + (spoiler === index ? " active" : "")
-							}
-						>
+						<div className={"block-support__message" + (spoiler === index ? " active" : "")}>
 							{item.message}
 						</div>
 						<UniversalButton

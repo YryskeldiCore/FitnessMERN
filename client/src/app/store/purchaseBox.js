@@ -14,7 +14,7 @@ const purchaseBoxSlice = createSlice({
 		purchaseBoxRequested(state) {
 			state.isLoading = true
 		},
-		purchaseBoxRecived(state, action) {
+		purchaseBoxReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -22,7 +22,7 @@ const purchaseBoxSlice = createSlice({
 			state.entities = action.payload
 			state.isLoading = false
 		},
-		purchaseBoxStopedLoader(state) {
+		purchaseBoxStoppedLoader(state) {
 			state.isLoading = false
 		},
 		purchaseBoxAdded(state, action) {
@@ -40,8 +40,8 @@ const {
 	purchaseBoxRequested,
 	purchaseBoxDeletedElement,
 	purchaseBoxAdded,
-	purchaseBoxStopedLoader,
-	purchaseBoxRecived,
+	purchaseBoxStoppedLoader,
+	purchaseBoxReceived,
 	purchaseBoxRequestField
 } = actions
 
@@ -64,7 +64,7 @@ export function fetchAllPurchaseBoxData() {
 		dispatch(purchaseBoxRequested())
 		try {
 			const { content } = await purchaseBoxService.fetchAll()
-			dispatch(purchaseBoxRecived(content))
+			dispatch(purchaseBoxReceived(content))
 		} catch (err) {
 			dispatch(purchaseBoxRequestField(err.message))
 		}
@@ -72,7 +72,7 @@ export function fetchAllPurchaseBoxData() {
 }
 export function stopLoaderPurchaseBox() {
 	return (dispatch) => {
-		dispatch(purchaseBoxStopedLoader())
+		dispatch(purchaseBoxStoppedLoader())
 	}
 }
 export function createPurchaseBoxElement(body) {

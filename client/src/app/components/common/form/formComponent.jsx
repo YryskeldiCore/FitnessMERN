@@ -12,7 +12,7 @@ const FormComponent = ({
 	const [data, setData] = useState(dataDefault || {})
 	const [errorObject, setErrorObject] = useState({})
 	const validate = useCallback(
-		(data) => {
+		data => {
 			const error = validator(data, config)
 			setErrorObject(error)
 			return Object.keys(error).length === 0

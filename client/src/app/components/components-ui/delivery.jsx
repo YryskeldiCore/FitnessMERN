@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import PropTypes from "prop-types"
-import FormComponent, { TextField, SelectField } from "../common/form"
+import FormComponent, { SelectField, TextField } from "../common/form"
 import getArrayDaysDuringWeek from "../../utils/getArrayDaysDuringWeek"
 import configAuxiliary from "../../configAuxiliary.json"
 import Message from "../common/message"
@@ -77,11 +77,10 @@ const Delivery = ({ onUpdate }) => {
 	}
 	const handlerSubmit = (data) => {
 		setStateMessage("spinner")
-		const id = setTimeout(() => {
+		idTime.current = setTimeout(() => {
 			setStateMessage("message")
 			onUpdate(data)
 		}, 1000)
-		idTime.current = id
 	}
 	useEffect(() => {
 		if (idTime.current) {

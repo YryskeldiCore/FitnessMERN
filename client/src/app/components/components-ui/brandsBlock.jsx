@@ -26,7 +26,7 @@ const BrandsBlock = () => {
 	const newArrayBrands = doubleFilter(categoryHead, categorySubject, brands)
 	const configMessageForBrandsList = {
 		pathImage: "/img/message/comment-dots.svg",
-		alt: "Иконка собщения",
+		alt: "Иконка сообщения",
 		title: "По отмеченным фильтрам ничего нет",
 		offer: "Попробуйте выбрать другую комбинацию категорий"
 	}

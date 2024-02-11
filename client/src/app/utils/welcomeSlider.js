@@ -1,4 +1,4 @@
-function initializationSLider() {
+function initSlider() {
 	const btnUp = document.querySelector(".welcome__up")
 	const btnDown = document.querySelector(".welcome__down")
 	const arrayImage = [...document.querySelectorAll(".welcome__image-container")]
@@ -34,4 +34,4 @@ function initializationSLider() {
 	})
 }
 
-export default initializationSLider
+export default initSlider

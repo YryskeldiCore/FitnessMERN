@@ -14,7 +14,7 @@ const brandSlice = createSlice({
 		brandRequested(state) {
 			state.isLoading = true
 		},
-		brandRecived(state, action) {
+		brandReceived(state, action) {
 			state.entities = action.payload
 			state.isLoading = false
 		},
@@ -26,7 +26,7 @@ const brandSlice = createSlice({
 })
 
 const { actions, reducer: brandReducer } = brandSlice
-const { brandRequested, brandRecived, brandRequestField } = actions
+const { brandRequested, brandReceived, brandRequestField } = actions
 
 // Actions
 export function fetchAllBrandData() {
@@ -34,7 +34,7 @@ export function fetchAllBrandData() {
 		dispatch(brandRequested())
 		try {
 			const { content } = await brandService.fetchAll()
-			dispatch(brandRecived(content))
+			dispatch(brandReceived(content))
 		} catch (err) {
 			dispatch(brandRequestField(err.message))
 		}

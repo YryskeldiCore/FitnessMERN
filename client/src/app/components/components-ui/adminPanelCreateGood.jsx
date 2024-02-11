@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux"
 import {
 	getStatusLoaderCategory,
 	getCategoryData,
-	fatchAllCategoryData
+	fetchAllCategoryData
 } from "../../store/category"
 import { getErrorGood } from "../../store/goods"
 import configAuxiliary from "../../configAuxiliary.json"
@@ -76,7 +76,7 @@ const AdminPanelCreateGood = ({ good, stateMode, onUpdateMode, onSubmit }) => {
 	}
 	useEffect(() => {
 		if (isLoading && category.length <= 0) {
-			dispatch(fatchAllCategoryData())
+			dispatch(fetchAllCategoryData())
 		}
 	}, [dispatch, isLoading, category.length])
 	const defaultData = stateMode === "create" ? { ...good, imageFile: [] } : good

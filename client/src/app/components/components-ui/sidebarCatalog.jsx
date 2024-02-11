@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import Spinner from "../common/spinner"
 import { useSelector, useDispatch } from "react-redux"
 import {
-	fatchAllCategoryData,
+	fetchAllCategoryData,
 	getStatusLoaderCategory,
 	getCategoryData
 } from "../../store/category"
@@ -19,7 +19,7 @@ const SidebarCatalog = ({
 	const category = useSelector(getCategoryData())
 	useEffect(() => {
 		if (isLoading) {
-			dispatch(fatchAllCategoryData())
+			dispatch(fetchAllCategoryData())
 		}
 	}, [dispatch, isLoading])
 	return (

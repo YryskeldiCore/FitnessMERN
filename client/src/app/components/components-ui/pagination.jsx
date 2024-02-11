@@ -4,7 +4,7 @@ import usePagination from "../../hooks/usePagination"
 
 const Pagination = ({ maxGoods, length, current, onUpdatePagin, onArrow }) => {
 	const scorePagins = Math.ceil(length / maxGoods)
-	const { isPrev, isNext, stateArrayPagins } = usePagination(
+	const { isPrev, isNext, stateArrayPagination } = usePagination(
 		scorePagins,
 		current
 	)
@@ -32,7 +32,7 @@ const Pagination = ({ maxGoods, length, current, onUpdatePagin, onArrow }) => {
 					alt="Стрелка влево"
 				/>
 				<ul className="pagination-body__list">
-					{stateArrayPagins.map((item) => {
+					{stateArrayPagination.map((item) => {
 						return item._id !== "delimiter" ? (
 							<li key={item._id}>
 								<a

@@ -20,7 +20,7 @@ const userSlice = createSlice({
 			state.isLoading = true
 			state.error = null
 		},
-		userCurrentRecived(state, action) {
+		userCurrentReceived(state, action) {
 			state.currentUser = action.payload
 			state.userId = action.payload._id
 			state.isAuth = true
@@ -30,7 +30,7 @@ const userSlice = createSlice({
 			state.error = action.payload
 			state.isLoading = false
 		},
-		userStopedLoader(state) {
+		userStoppedLoader(state) {
 			state.isLoading = false
 		},
 		userSignUpRequested(state) {
@@ -58,7 +58,7 @@ const userSlice = createSlice({
 			state.error = null
 			state.isLoading = true
 		},
-		userRecoveryPassRecived(state) {
+		userRecoveryPassReceived(state) {
 			state.isLoading = false
 		},
 		userRecoveryPassRequestField(state, action) {
@@ -71,7 +71,7 @@ const userSlice = createSlice({
 		userUpdatedRequest(state) {
 			state.error = null
 		},
-		userUpdatedRecived(state, action) {
+		userUpdatedReceived(state, action) {
 			if (state.currentUser.numberOfPurchases) {
 				state.currentUser.numberOfPurchases += action.payload
 			} else {
@@ -84,10 +84,10 @@ const userSlice = createSlice({
 const { actions, reducer: userReducer } = userSlice
 const {
 	userUpdatedRequestField,
-	userUpdatedRecived,
+	userUpdatedReceived,
 	userUpdatedRequest,
 	userRecoveryPassRequested,
-	userRecoveryPassRecived,
+	userRecoveryPassReceived,
 	userRecoveryPassRequestField,
 	userCurrentLogout,
 	userSignInRequestField,
@@ -96,8 +96,8 @@ const {
 	userSignUpRequested,
 	userCurrentRequested,
 	userCurrentRequestField,
-	userCurrentRecived,
-	userStopedLoader
+	userCurrentReceived,
+	userStoppedLoader
 } = actions
 
 // Actions
@@ -106,7 +106,7 @@ export function userUpdate(payload) {
 		dispatch(userUpdatedRequest())
 		try {
 			await userService.update(payload)
-			dispatch(userUpdatedRecived(payload.numberOfPurchases))
+			dispatch(userUpdatedReceived(payload.numberOfPurchases))
 		} catch (err) {
 			dispatch(userUpdatedRequestField(err.message))
 		}
@@ -117,7 +117,7 @@ export function userRecoveryPassword(payload) {
 		dispatch(userRecoveryPassRequested())
 		try {
 			await userService.recoveryPassword(payload)
-			dispatch(userRecoveryPassRecived())
+			dispatch(userRecoveryPassReceived())
 			history.push("/login")
 		} catch (err) {
 			const { code, message } = err.response.data.error
@@ -167,7 +167,7 @@ export function userSignIn(payload) {
 			const { data } = await authService.signIn(payload)
 			localStorageService.setToken(data)
 			const { content } = await userService.getUserOnId()
-			dispatch(userCurrentRecived(content))
+			dispatch(userCurrentReceived(content))
 			history.push(
 				history.location.state ? history.location.state.from : "/home"
 			)
@@ -200,7 +200,7 @@ export function userSignUp(payload) {
 			localStorageService.setToken(data)
 			dispatch(userCurrentRequested())
 			const { content } = await userService.getUserOnId()
-			dispatch(userCurrentRecived(content))
+			dispatch(userCurrentReceived(content))
 			history.push("/home")
 		} catch (err) {
 			const { code, message } = err.response.data.error
@@ -223,7 +223,7 @@ export function getUserCurrent() {
 		dispatch(userCurrentRequested())
 		try {
 			const { content } = await userService.getUserOnId()
-			dispatch(userCurrentRecived(content))
+			dispatch(userCurrentReceived(content))
 		} catch (err) {
 			dispatch(userCurrentRequestField(err.message))
 		}
@@ -231,7 +231,7 @@ export function getUserCurrent() {
 }
 export function stopLoadingForNoAuth() {
 	return (dispatch) => {
-		dispatch(userStopedLoader())
+		dispatch(userStoppedLoader())
 	}
 }
 

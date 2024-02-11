@@ -17,7 +17,7 @@ const GroupBodyGoods = ({
 	sortedState
 }) => {
 	const sorteredObject = configAuxiliary.configSortedGoods
-	const [currentPagin, setCurrentPagin] = useState(1) // state Pagin
+	const [currentPagin, setCurrentPagin] = useState(1)
 	const goods = [...useSelector(getGoodsData())]
 	const MAX_GOODS_ON_PAGE = 3
 	const handlerUpdatePagin = (id) => setCurrentPagin(id)
@@ -28,16 +28,15 @@ const GroupBodyGoods = ({
 		(searchInput &&
 			goods.filter((element) =>
 				element.name.toLowerCase().includes(searchInput.toLowerCase())
-			)) ||
-		goods // FILTER
-	sortData(filteredArray, sortedState) // SORT
+			)) || goods
+	sortData(filteredArray, sortedState)
 
 	const lengthGoods = filteredArray.length
 	const newArrayGoods = getNewArrayPagins(
 		MAX_GOODS_ON_PAGE,
 		currentPagin,
 		filteredArray
-	) // PAGINATIONS
+	)
 
 	const handlerArrowPagins = (typeMethod) => {
 		if (typeMethod === "decrement") {

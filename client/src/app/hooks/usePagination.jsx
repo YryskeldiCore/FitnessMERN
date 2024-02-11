@@ -8,7 +8,7 @@ const usePagination = (lengthPages, currentPage) => {
 		const z = i + 1
 		arrayPagins.push({ _id: z, value: z })
 	}
-	function getPagins(allPage, array, current) {
+	function getPagination(allPage, array, current) {
 		const MAX_COUNT_PAGE = 6
 		if (allPage > MAX_COUNT_PAGE) {
 			const delimiter = { _id: "delimiter", value: "..." }
@@ -50,12 +50,11 @@ const usePagination = (lengthPages, currentPage) => {
 		}
 		return array
 	}
-	const config = {
+	return {
 		isPrev: isPrevArrow,
 		isNext: isNextArrow,
-		stateArrayPagins: getPagins(lengthPages, arrayPagins, currentPage)
+		stateArrayPagination: getPagination(lengthPages, arrayPagins, currentPage)
 	}
-	return config
 }
 
 export default usePagination

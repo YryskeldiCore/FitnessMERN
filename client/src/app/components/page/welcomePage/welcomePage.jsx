@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import initializationSLider from "../../../utils/welcomeSlider"
+import initSlider from "../../../utils/welcomeSlider"
 import configAuxiliary from "../../../configAuxiliary.json"
 import UniversalButton from "../../common/universalButton"
 import { useHistory } from "react-router-dom"
@@ -12,7 +12,7 @@ const WelcomePage = () => {
 		history.push("/home")
 	}
 	useEffect(() => {
-		initializationSLider()
+		initSlider()
 	}, [])
 	return (
 		<div className="welcome">
